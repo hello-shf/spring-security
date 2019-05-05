@@ -1,6 +1,6 @@
 package com.shf.security.security.config;
 
-import com.shf.security.security.utils.VerifyCodeFactory;
+import com.shf.security.utils.VerifyCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -80,7 +80,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // 这个VerifyCodeFactory.SESSION_KEY是在servlet中存入session的名字
         HttpSession session = request.getSession();
-        String verifyCode = (String)session.getAttribute(VerifyCodeFactory.SESSION_KEY);
+        String verifyCode = (String)session.getAttribute(VerifyCodeUtil.SESSION_KEY);
         if(null == verifyCode || verifyCode.isEmpty()){
             log.warn("验证码过期请重新验证");
             throw new DisabledException("验证码过期，请重新验证");
