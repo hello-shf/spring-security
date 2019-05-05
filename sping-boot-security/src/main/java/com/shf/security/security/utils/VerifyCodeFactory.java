@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 描述：验证码生成器
@@ -22,7 +24,7 @@ import java.util.Random;
 public class VerifyCodeFactory extends HttpServlet {
     private static final long serialVersionUID = -5051097528828603895L;
     public final static String SESSION_KEY = "verifyCode";
-    private final static int SESSION_TIME_OUT = 3600;
+    private static final long VERIFYCODE_TIMEOUT = 1*60*1000;//一分钟
 
 
     /**
@@ -153,7 +155,7 @@ public class VerifyCodeFactory extends HttpServlet {
         // 将四位数字的验证码保存到Session中。
         HttpSession session = request.getSession();
         session.setAttribute(SESSION_KEY, randomCode.toString());
-        session.setMaxInactiveInterval(SESSION_TIME_OUT);
+        this.removeAttrbute(session);
         // 禁止图像缓存。
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Cache-Control", "no-cache");
@@ -164,5 +166,19 @@ public class VerifyCodeFactory extends HttpServlet {
         ServletOutputStream sos = response.getOutputStream();
         ImageIO.write(buffImg, "jpeg", sos);
         sos.close();
+    }
+    /**
+     * 定时删除session中存在的验证码信息
+     * @param session
+     */
+    private void removeAttrbute(final HttpSession session) {
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                session.removeAttribute(SESSION_KEY);
+                timer.cancel();
+            }
+        }, VERIFYCODE_TIMEOUT);
     }
 }
