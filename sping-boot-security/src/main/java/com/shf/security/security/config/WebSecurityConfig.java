@@ -47,7 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //将自定义的CustomAuthenticationProvider装配到AuthenticationManagerBuilder
         auth.authenticationProvider(customAuthenticationProvider);
+        //将自定的CustomUserDetailsService装配到AuthenticationManagerBuilder
         auth.userDetailsService(customUserDetailsService).passwordEncoder(new PasswordEncoder() {
             @Override
             public String encode(CharSequence charSequence) {
@@ -101,9 +103,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
         auth.eraseCredentials(false);
     }
-
+    //密码加密配置
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() { //密码加密
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(4);
     }
     //登入成功
@@ -151,9 +153,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
-
+    //登出处理
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler() { //登出处理
+    public LogoutSuccessHandler logoutSuccessHandler() {
         return new LogoutSuccessHandler() {
             /**
              * 处理登出成功的请求

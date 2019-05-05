@@ -20,10 +20,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private TUserService userService;
 
+    /**
+     * 认证过程中 - 根据登录信息获取用户详细信息
+     *
+     * @param s 登录用户输入的用户名
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        //根据用户输入的用户信息，查询数据库中已注册用户信息
         TUser user = userService.findByName(s);
-        if (user == null) throw new UsernameNotFoundException("Username " + s + " not found");
+        //如果用户不存在直接抛出UsernameNotFoundException异常
+        if (user == null) throw new UsernameNotFoundException("用户名为" + s + "的用户不存在");
         return new CustomUserDetails(user);
     }
 }
