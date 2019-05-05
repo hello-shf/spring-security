@@ -117,7 +117,7 @@ public class VerifyCodeFactory extends HttpServlet {
         // 创建一个随机数生成器类
         Random random = new Random();
         // 将图像填充为白色
-        gd.setColor(Color.LIGHT_GRAY);
+        gd.setColor(Color.WHITE);
         gd.fillRect(0, 0, width, height);
         // 创建字体，字体的大小应该根据图片的高度来定。
         Font font = new Font("Times New Roman", Font.PLAIN, fontHeight);

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @Date 2019/4/21 18:05
  * @Version V1.0
  **/
-@Configuration
+//@Configuration
 public class VerifyCodeServletConfig {
     @Bean
     public ServletRegistrationBean indexServletRegistration() {
