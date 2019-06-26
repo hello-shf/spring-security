@@ -36,6 +36,14 @@ public class CustomFilterSecurityInterceptor extends AbstractSecurityInterceptor
 
     }
 
+    /**
+     * 登录后，每次发起请求都会经过该过滤器
+     * @param request
+     * @param response
+     * @param chain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         FilterInvocation fi = new FilterInvocation(request, response, chain);
@@ -43,8 +51,8 @@ public class CustomFilterSecurityInterceptor extends AbstractSecurityInterceptor
     }
     public void invoke(FilterInvocation fi) throws IOException, ServletException {
         //fi里面有一个被拦截的url
-        //里面调用UrlMetadataSource的getAttributes(Object object)这个方法获取fi对应的所有权限
-        //再调用UrlAccessDecisionManager的decide方法来校验用户的权限是否足够
+        //里面调用CustomFilterInvocationSecurityMetadataSource的getAttributes(Object object)这个方法判断该请求是否需要进行角色判断
+        //也就是CustomAccessDecisionManager类的decide方法
         InterceptorStatusToken token = super.beforeInvocation(fi);
         try {
             //执行下一个拦截器
