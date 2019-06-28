@@ -165,7 +165,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //生成token
                 String token = jwtTokenUtil.generateToken(userDetails);
                 //将 token 保存到redis
-                redisUtil.hset(RedisKeys.USER_KEY, token, JSON.toJSONString(userDetails), jwtProperties.getExpiration());
+                redisUtil.hset(userDetails.getUsername(), token, JSON.toJSONString(userDetails), jwtProperties.getExpiration());
                 //处理登录结果
                 result.buildSuccessResponse("已登录");
                 result.setData(token);

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.shf.jwt.entity.properties.JwtProperties;
 import com.shf.jwt.security.auth.CustomUserDetailsService;
 import com.shf.jwt.utils.JwtTokenUtil;
+import com.shf.jwt.utils.RedisKeys;
+import com.shf.jwt.utils.RedisUtil;
 import com.shf.jwt.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProperties jwtProperties;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         Response result = new Response();
@@ -51,6 +56,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }else {
+            if (StringUtils.isEmpty(authorization)) {
+                response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "未提供token")));
+                return;
+            }
             if(!authorization.startsWith(jwtProperties.getTokenHead())){
                 response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "token格式错误")));
                 return;
@@ -61,20 +70,24 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "无效的Token")));
                 return;
             }
-            SecurityContextHolder.getContext().getAuthentication();
-            if(jwtTokenUtil.isTokenExpired(token)){
+            if(!redisUtil.hHasKey(username, token)){
                 response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "Token已过期")));
                 return;
             }
-            if (StringUtils.isEmpty(authorization)) {
-                response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "未提供token")));
-                return;
-            }
+            // 将token放到redis中，过期时间通过redis控制
+//            SecurityContextHolder.getContext().getAuthentication();
+//            if(jwtTokenUtil.isTokenExpired(token)){
+//                response.getWriter().write(JSON.toJSONString(result.buildFailedResponse("403", "Token已过期")));
+//                return;
+//            }
+
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            //重置 token 过期时间
+            redisUtil.expire(username, jwtProperties.getExpiration());
         }
         chain.doFilter(request, response);
     }
