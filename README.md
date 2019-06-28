@@ -5,7 +5,7 @@
     在spring-boot-security的基础上实现角色管理。
 ### spring-boot-security-jwt
     实现动态角色管理，并集成JWT以token代替session。此版本未实现验证码登录的功能。
-    **TIPS**：
+    __TIPS__：
         登录认证方式和spring-boot-security有所不同。该版本登录认证采用自定义的/auth/login方式替代security默认的/login（当然这个也是可以指定的）登录地址，简单来说也就是在自己的controller中实现了登录方法。这样做的目的在于可以在controller中生成token并返回。
 ### spring-boot-security-jwt-redis
     SpringBoot整合security实现基于验证码的登录认证和动态角色管理，在此基础上集成JWT采用token代替session，并将token存储到redis。
