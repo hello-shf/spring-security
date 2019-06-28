@@ -86,8 +86,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println(redisUtil.getExpire(username));
             //重置 token 过期时间
             redisUtil.expire(username, jwtProperties.getExpiration());
+            System.out.println(redisUtil.getExpire(username));
         }
         chain.doFilter(request, response);
     }

@@ -71,7 +71,8 @@ public class JwtTokenUtil implements Serializable {
     }
 
     private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + jwtProperties.getExpiration() * 1000);
+        // 我们采用 redis 保存 token 所以将token本身的过期时间设置为最大
+        return new Date(System.currentTimeMillis() + Integer.MAX_VALUE);//jwtProperties.getExpiration() * 1000);
     }
 
     public Boolean isTokenExpired(String token) {
