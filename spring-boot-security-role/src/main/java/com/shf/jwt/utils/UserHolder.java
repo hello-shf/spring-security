@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * 描述：
  *
  * @Author shf
- * @Description TODO
  * @Date 2019/4/21 15:24
  * @Version V1.0
  **/
