@@ -1,0 +1,10 @@
+server:
+  port: 10092
+spring:
+  redis:
+    host: shf.com
+    port: 6379
+    database: 2
+iot:
+  auth:
+    permit-all: /getVerifyCode,/login,/login_page,/login_error,/tSysUser/register,/tSysUser/isExist,/tSysDic/**,/tSysUserFindpw/find,/tSysUserFindpw/test,/tMgmt/** # ����Ҫ��Ȩ���ʵķ��ʵ�ַ ��,�����������Ҫ�пո�

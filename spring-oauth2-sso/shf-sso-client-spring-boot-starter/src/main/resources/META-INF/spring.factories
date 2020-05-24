@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.shf.sso.client.config.ResourceServerConfiguration,\
+    com.shf.sso.client.role.CustomFilterInvocationSecurityMetadataSource,\
+    com.shf.sso.client.role.CustomFilterSecurityInterceptor,\
+    com.shf.sso.client.role.CustomAccessDecisionManager
